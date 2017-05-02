@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TccGabrielDuarte.CrossCutting\TccGabrielDuarte.CrossCutting.csproj" />
+    <ProjectReference Include="..\TccGabrielDuarte.Data.Dapper\TccGabrielDuarte.Data.Dapper.csproj" />
+    <ProjectReference Include="..\TccGabrielDuarte.Data.EF\TccGabrielDuarte.Data.EF.csproj" />
+  </ItemGroup>
+
+</Project>
