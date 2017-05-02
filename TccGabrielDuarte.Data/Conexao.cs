@@ -40,5 +40,24 @@ namespace TccGabrielDuarte.Data
                     break;
             }
         }
+
+        public void RealizarOperacao(Enums.OPCOES opcao)
+        {
+            switch (opcao)
+            {
+                case Enums.OPCOES.Alunos:
+                    break;
+                case Enums.OPCOES.Cursos:
+                    break;
+                case Enums.OPCOES.Disciplinas:
+                    break;
+                case Enums.OPCOES.Historicos:
+                    break;
+                case Enums.OPCOES.Turmas:
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

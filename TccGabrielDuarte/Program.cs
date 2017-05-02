@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using TccGabrielDuarte.CrossCutting;
+using TccGabrielDuarte.Data;
 
 namespace TccGabrielDuarte
 {
@@ -67,15 +69,15 @@ namespace TccGabrielDuarte
 
         private static void IniciarOperacao(Enums.OPCOES opcao)
         {
-            switch (DB)
-            {
-                case Enums.BANCOS.SQLite:
-                    break;
-                case Enums.BANCOS.SQLServer:
-                    break;
-                default:
-                    break;
-            }
+            Console.WriteLine("Iniciando operação: " + opcao.ToString());
+            var timer = Stopwatch.StartNew();
+
+            var conn = new Conexao(DB, PROVIDER);
+            conn.RealizarOperacao(opcao);
+
+            timer.Stop();
+
+            Console.WriteLine($"Operação levou {timer.ElapsedMilliseconds}ms.");
         }
 
         private static ConsoleKeyInfo ExibirOpcoes()
