@@ -7,7 +7,7 @@ using TccGabrielDuarte.Model;
 
 namespace TccGabrielDuarte.Data.EF
 {
-    public class TccContext : DbContext, ITipoConexao
+    public class TccContext : DbContext
     {
         public DbSet<Aluno> Aluno { get; set; }
         public DbSet<Turma> Turma { get; set; }
@@ -23,9 +23,9 @@ namespace TccGabrielDuarte.Data.EF
             UseSqlServer = true;
         }
 
-        public TccContext(bool useSqlServer)
+        public TccContext(Enums.BANCOS banco)
         {
-            UseSqlServer = useSqlServer;
+            UseSqlServer = banco == Enums.BANCOS.SQLServer ? true : false;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -36,15 +36,9 @@ namespace TccGabrielDuarte.Data.EF
             }
         }
 
-        public void Seed(int qtAlunos = 10)
+        public void Seed(int qtAlunos)
         {
             var rnd = new Random();
-            Aluno.RemoveRange(Aluno);
-            HistoricoEscolar.RemoveRange(HistoricoEscolar);
-            Curso.RemoveRange(Curso);
-            CursoDisciplina.RemoveRange(CursoDisciplina);
-            Disciplina.RemoveRange(Disciplina);
-            Turma.RemoveRange(Turma);
 
             var cursos = new List<Curso>
             {
@@ -74,6 +68,7 @@ namespace TccGabrielDuarte.Data.EF
                     Sigla = "PSI"
                 },
             };
+
             Curso.AddRange(cursos);
             SaveChanges();
 
@@ -107,7 +102,7 @@ namespace TccGabrielDuarte.Data.EF
 
             var turmas = new List<Turma>();
 
-            foreach (var curso in Curso.ToList())
+            foreach (var curso in cursos.ToList())
             {
                 var cursoDisciplinas = CursoDisciplina.Where(x => x.CursoId == curso.Id).ToList();
                 var disciplinasDoCurso = Disciplina.Where(x => cursoDisciplinas.Select(y => y.DisciplinaId).Contains(x.Id)).ToList();

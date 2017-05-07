@@ -8,8 +8,8 @@ namespace TccGabrielDuarte.Data.EF
 {
     public interface IEntityBaseRepository<T> where T : class, IEntityBase
     {
-        IEnumerable<T> GetAll();
-        IEnumerable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties);
+        ICollection<T> GetAll();
+        ICollection<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties);
         T Get(int id);
         T Get(Expression<Func<T, bool>> predicate);
         T Get(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);

@@ -8,55 +8,45 @@ namespace TccGabrielDuarte.Data
 {
     public class Conexao
     {
+        public ITipoConexao Conn { get; set; }
         public Conexao(Enums.BANCOS banco, Enums.PROVIDERS provider)
         {
-            ITipoConexao conexao = null;
-
             switch (provider)
             {
                 case Enums.PROVIDERS.Dapper:
-                    switch (banco)
-                    {
-                        case Enums.BANCOS.SQLite:
-                            conexao = new TccContext(false);
-                            break;
-                        case Enums.BANCOS.SQLServer:
-                            conexao = new TccContext(true);
-                            break;
-                    }
                     break;
                 case Enums.PROVIDERS.EF:
-                    switch (banco)
-                    {
-                        case Enums.BANCOS.SQLite:
-                            conexao = new TccContext(false);
-                            break;
-                        case Enums.BANCOS.SQLServer:
-                            conexao = new TccContext(true);
-                            break;
-                    }
+                    Conn = new ConnEF(banco);
                     break;
                 default:
                     break;
             }
         }
 
-        public void RealizarOperacao(Enums.OPCOES opcao)
+        public void LimparBase()
+        {
+            Conn.LimparBase();
+        }
+
+        public int RealizarOperacao(Enums.OPCOES opcao, int? qtAlunos)
         {
             switch (opcao)
             {
                 case Enums.OPCOES.Alunos:
-                    break;
+                    return Conn.GetListaAlunos();
                 case Enums.OPCOES.Cursos:
-                    break;
+                    return Conn.GetListaCursos();
                 case Enums.OPCOES.Disciplinas:
-                    break;
+                    return Conn.GetListaDisciplinas();
                 case Enums.OPCOES.Historicos:
-                    break;
+                    return Conn.GetListaHistoricos();
                 case Enums.OPCOES.Turmas:
-                    break;
+                    return Conn.GetListaTurmas();
+                case Enums.OPCOES.PopularTabelas:
+                    Conn.Seed((int)qtAlunos);
+                    return (int)qtAlunos;
                 default:
-                    break;
+                    return -1;
             }
         }
     }

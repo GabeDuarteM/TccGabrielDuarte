@@ -66,12 +66,12 @@ namespace TccGabrielDuarte.Data.EF
             return query.Where(predicate).FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        public ICollection<T> GetAll()
         {
-            return _context.Set<T>().AsEnumerable();
+            return _context.Set<T>().ToList();
         }
 
-        public IEnumerable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties)
+        public ICollection<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = _context.Set<T>();
 
@@ -80,7 +80,7 @@ namespace TccGabrielDuarte.Data.EF
                 query = query.Include(includeProperty);
             }
 
-            return query.AsEnumerable();
+            return query.ToList();
         }
 
         public void Update(T entity)

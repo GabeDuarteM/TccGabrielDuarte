@@ -10,6 +10,7 @@ namespace TccGabrielDuarte.CrossCutting
 
         public enum OPCOES
         {
+            PopularTabelas,
             Alunos,
             Cursos,
             Disciplinas,

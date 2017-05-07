@@ -21,27 +21,10 @@ namespace TccGabrielDuarte
             EscolherOpcoes();
 
             Console.WriteLine("Pressione algo para finalizar...");
-            Console.ReadKey();
-            Environment.Exit(0);
-
-            Console.WriteLine("Opções:");
-            Console.WriteLine("A: Pesquisar alunos");
-            Console.WriteLine("B: Pesquisar históricos");
-            Console.WriteLine("D: Pesquisar disciplinas");
-            Console.WriteLine("E: Pesquisar cursos");
-            Console.WriteLine("F: Pesquisar turmas");
-            while (Console.ReadKey().Key != ConsoleKey.A)
-            {
-
-            }
-            Console.WriteLine(Environment.NewLine);
             
+            Console.ReadKey();
 
-
-            //var context = new TccContext();
-
-            //context.Seed(1000000);
-
+            Environment.Exit(0);
         }
 
         private static void EscolherOpcoes()
@@ -49,6 +32,7 @@ namespace TccGabrielDuarte
             var opcoes = Enum.GetValues(typeof(Enums.OPCOES)).Cast<int>();
 
             ConsoleKeyInfo opt;
+            
             do
             {
                 opt = ExibirOpcoes();
@@ -69,15 +53,46 @@ namespace TccGabrielDuarte
 
         private static void IniciarOperacao(Enums.OPCOES opcao)
         {
-            Console.WriteLine("Iniciando operação: " + opcao.ToString());
-            var timer = Stopwatch.StartNew();
+            int? qtAlunos = null;
+
+            if (opcao == Enums.OPCOES.PopularTabelas)
+            {
+                Console.WriteLine("Com quantos alunos você deseja fazer o teste?");
+                var strQtAlunos = Console.ReadLine();
+
+                Console.Write(Environment.NewLine);
+
+                if (int.TryParse(strQtAlunos.Trim(), out int intQtAluno))
+                {
+                    qtAlunos = intQtAluno;
+                }
+                else
+                {
+                    Console.WriteLine("Quantidade informada não é um número válido.");
+                    return;
+                }
+            }
 
             var conn = new Conexao(DB, PROVIDER);
-            conn.RealizarOperacao(opcao);
+
+            if (opcao == Enums.OPCOES.PopularTabelas)
+            {
+                Console.WriteLine("Limpando a base antes de inserir registros...");
+                Console.Write(Environment.NewLine);
+                conn.LimparBase();
+            }
+
+            Console.WriteLine("Iniciando operação: " + opcao.ToString());
+            Console.Write(Environment.NewLine);
+
+            var timer = Stopwatch.StartNew();
+
+            var qtRegistros = conn.RealizarOperacao(opcao, qtAlunos);
 
             timer.Stop();
 
-            Console.WriteLine($"Operação levou {timer.ElapsedMilliseconds}ms.");
+            Console.WriteLine($"Operação levou {timer.ElapsedMilliseconds}ms e retornou {qtRegistros} registros.");
+            Console.Write(Environment.NewLine);
         }
 
         private static ConsoleKeyInfo ExibirOpcoes()
