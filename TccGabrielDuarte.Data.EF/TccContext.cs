@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using TccGabrielDuarte.CrossCutting;
@@ -33,6 +34,10 @@ namespace TccGabrielDuarte.Data.EF
             if (UseSqlServer)
             {
                 optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Escola;Trusted_Connection=True;");
+            }
+            else
+            {
+                optionsBuilder.UseSqlite(@"Data Source=.\Escola.db");
             }
         }
 

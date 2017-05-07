@@ -10,4 +10,10 @@
     <ProjectReference Include="..\TccGabrielDuarte.Data.EF\TccGabrielDuarte.Data.EF.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Escola.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
