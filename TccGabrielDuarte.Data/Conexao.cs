@@ -14,6 +14,7 @@ namespace TccGabrielDuarte.Data
             switch (provider)
             {
                 case Enums.PROVIDERS.Dapper:
+                    Conn = new ConnDapper(banco);
                     break;
                 case Enums.PROVIDERS.EF:
                     Conn = new ConnEF(banco);

@@ -1,47 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Dapper;
 using TccGabrielDuarte.CrossCutting;
+using TccGabrielDuarte.Data.Dapper;
 
 namespace TccGabrielDuarte.Data
 {
     public class ConnDapper : ITipoConexao
     {
-        public Enums.BANCOS Banco { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Enums.BANCOS Banco { get; set; }
+        public TccContextDapper Conn { get => new TccContextDapper(Banco); }
+
+        public ConnDapper(Enums.BANCOS banco)
+        {
+            Banco = banco;
+        }
 
         public int GetListaAlunos()
         {
-            throw new NotImplementedException();
+            var repo = new AlunoRepository(Conn);
+            return repo.GetAll().Count;
         }
 
         public int GetListaCursos()
         {
-            throw new NotImplementedException();
+            var repo = new CursoRepository(Conn);
+            return repo.GetAll().Count;
         }
 
         public int GetListaDisciplinas()
         {
-            throw new NotImplementedException();
+            var repo = new DisciplinaRepository(Conn);
+            return repo.GetAll().Count;
         }
 
         public int GetListaHistoricos()
         {
-            throw new NotImplementedException();
+            var repo = new HistoricoEscolarRepository(Conn);
+            return repo.GetAll().Count;
         }
 
         public int GetListaTurmas()
         {
-            throw new NotImplementedException();
+            var repo = new TurmaRepository(Conn);
+            return repo.GetAll().Count;
         }
 
         public void LimparBase()
         {
-            throw new NotImplementedException();
+            using (var conn = Conn.Conn)
+            {
+                conn.Open();
+
+                conn.Execute("DELETE FROM Aluno");
+                conn.Execute("DELETE FROM HistoricoEscolar");
+                conn.Execute("DELETE FROM CursoDisciplina");
+                conn.Execute("DELETE FROM Disciplina");
+                conn.Execute("DELETE FROM Turma");
+            }
         }
 
         public void Seed(int qtAlunos)
         {
-            throw new NotImplementedException();
+            Conn.Seed(qtAlunos);
         }
     }
 }

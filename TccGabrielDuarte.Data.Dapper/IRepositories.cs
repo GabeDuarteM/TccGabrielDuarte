@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TccGabrielDuarte.Model;
+﻿using TccGabrielDuarte.Model;
 
-namespace TccGabrielDuarte.Data.EF
+namespace TccGabrielDuarte.Data.Dapper
 {
     public interface IAlunoRepository : IEntityBaseRepository<Aluno> { }
     public interface ITurmaRepository : IEntityBaseRepository<Turma> { }

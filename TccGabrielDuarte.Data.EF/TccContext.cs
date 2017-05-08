@@ -37,7 +37,7 @@ namespace TccGabrielDuarte.Data.EF
             }
             else
             {
-                optionsBuilder.UseSqlite(@"Data Source=.\Escola.db");
+                optionsBuilder.UseSqlite(@"Data Source=Escola.db");
             }
         }
 
@@ -45,115 +45,27 @@ namespace TccGabrielDuarte.Data.EF
         {
             var rnd = new Random();
 
-            var cursos = new List<Curso>
-            {
-                new Curso
-                {
-                    Nome = "Sistemas de Informação",
-                    Sigla = "SI"
-                },
-                new Curso
-                {
-                    Nome = "Administração",
-                    Sigla = "ADM"
-                },
-                new Curso
-                {
-                    Nome = "Direito",
-                    Sigla = "DIR"
-                },
-                new Curso
-                {
-                    Nome = "Gastronomia",
-                    Sigla = "GST"
-                },
-                new Curso
-                {
-                    Nome = "Psicologia",
-                    Sigla = "PSI"
-                },
-            };
+            var cursos = DataGenerator.Cursos();
 
             Curso.AddRange(cursos);
             SaveChanges();
 
-
-            var disciplinas = new List<Disciplina>();
-
-            foreach (var curso in cursos)
-            {
-                for (int i = 0; i < 11; i++)
-                {
-                    var disciplina = new Disciplina
-                    {
-                        Nome = $"{curso.Nome}: {i + 1}",
-                        CodDisciplina = $"{curso.Sigla}{ (i + 1).ToString().PadLeft(3, '0')}",
-                        Creditos = rnd.Next(1, 8),
-                        CursoDisciplinas = new List<CursoDisciplina>
-                        {
-                            new CursoDisciplina
-                            {
-                                Curso = curso
-                            }
-                        }
-                    };
-
-                    disciplinas.Add(disciplina);
-                }
-            }
+            var disciplinas = DataGenerator.Disciplinas(cursos);
 
             Disciplina.AddRange(disciplinas);
             SaveChanges();
 
-            var turmas = new List<Turma>();
-
-            foreach (var curso in cursos.ToList())
-            {
-                var cursoDisciplinas = CursoDisciplina.Where(x => x.CursoId == curso.Id).ToList();
-                var disciplinasDoCurso = Disciplina.Where(x => cursoDisciplinas.Select(y => y.DisciplinaId).Contains(x.Id)).ToList();
-
-                var turma = new Turma
-                {
-                    Ano = 2017,
-                    Disciplinas = disciplinasDoCurso,
-                    Professor = $"Professor {curso.Nome}",
-                    Semestre = 1
-                };
-                turmas.Add(turma);
-            }
+            var turmas = DataGenerator.Turmas(cursos, disciplinas);
 
             Turma.AddRange(turmas);
             SaveChanges();
 
-            var alunos = new List<Aluno>();
-            var historicos = new List<HistoricoEscolar>();
-            var alunosPorCurso = qtAlunos / 5;
-
-            foreach (var curso in cursos)
-            {
-                for (int i = 0; i < alunosPorCurso; i++)
-                {
-                    var aluno = new Aluno
-                    {
-                        Curso = curso,
-                        Nome = $"Aluno {i} {curso.Sigla}",
-                        TipoAluno = rnd.Next(1, 8)
-                    };
-
-                    var historico = new HistoricoEscolar
-                    {
-                        Aluno = aluno,
-                        Media = rnd.Next(0, 10),
-                        Turma = turmas.First(x => x.Disciplinas.First().CursoDisciplinas.First().Curso == curso)
-                    };
-
-                    alunos.Add(aluno);
-                    historicos.Add(historico);
-                }
-            }
-
+            var alunos = DataGenerator.Alunos(qtAlunos, cursos);
             Aluno.AddRange(alunos);
+
+            var historicos = DataGenerator.HistoricosEscolares(cursos, alunos, turmas);
             HistoricoEscolar.AddRange(historicos);
+
             SaveChanges();
         }
     }

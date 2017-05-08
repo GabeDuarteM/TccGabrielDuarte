@@ -4,4 +4,14 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.50.2" />
+    <PackageReference Include="Dapper.Contrib" Version="1.50.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TccGabrielDuarte.CrossCutting\TccGabrielDuarte.CrossCutting.csproj" />
+    <ProjectReference Include="..\TccGabrielDuarte.Model\TccGabrielDuarte.Model.csproj" />
+  </ItemGroup>
+
 </Project>

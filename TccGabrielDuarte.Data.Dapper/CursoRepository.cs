@@ -1,9 +1,9 @@
 ﻿using TccGabrielDuarte.Model;
 
-namespace TccGabrielDuarte.Data.EF
+namespace TccGabrielDuarte.Data.Dapper
 {
     public class CursoRepository : EntityBaseRepository<Curso>, ICursoRepository
     {
-        public CursoRepository(TccContext context) : base(context) { }
+        public CursoRepository(TccContextDapper context) : base(context) { }
     }
 }
