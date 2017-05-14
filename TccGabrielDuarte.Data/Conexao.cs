@@ -39,8 +39,6 @@ namespace TccGabrielDuarte.Data
                     return Conn.GetListaCursos();
                 case Enums.OPCOES.Disciplinas:
                     return Conn.GetListaDisciplinas();
-                case Enums.OPCOES.Historicos:
-                    return Conn.GetListaHistoricos();
                 case Enums.OPCOES.Turmas:
                     return Conn.GetListaTurmas();
                 case Enums.OPCOES.PopularTabelas:

@@ -14,7 +14,6 @@ namespace TccGabrielDuarte.CrossCutting
             Alunos,
             Cursos,
             Disciplinas,
-            Historicos,
             Turmas
         }
 

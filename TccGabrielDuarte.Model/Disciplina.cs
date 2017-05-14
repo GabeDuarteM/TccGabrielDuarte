@@ -8,6 +8,8 @@ namespace TccGabrielDuarte.Model
         public string Nome { get; set; }
         public string CodDisciplina { get; set; }
         public int Creditos { get; set; }
-        public virtual ICollection<CursoDisciplina> CursoDisciplinas { get; set; }
+        public ICollection<CursoDisciplina> CursoDisciplinas { get; set; }
+        public int TurmaId { get; set; }
+        public Turma Turma { get; set; }
     }
 }

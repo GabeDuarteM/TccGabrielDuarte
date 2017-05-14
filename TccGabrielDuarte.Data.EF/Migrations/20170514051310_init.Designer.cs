@@ -8,7 +8,7 @@ using TccGabrielDuarte.Data.EF;
 namespace TccGabrielDuarte.Data.EF.Migrations
 {
     [DbContext(typeof(TccContext))]
-    [Migration("20170502050208_init")]
+    [Migration("20170514051310_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,17 +22,26 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CursoId");
-
                     b.Property<string>("Nome");
 
-                    b.Property<int>("TipoAluno");
+                    b.Property<int>("Semestre");
 
                     b.HasKey("Id");
 
+                    b.ToTable("Aluno");
+                });
+
+            modelBuilder.Entity("TccGabrielDuarte.Model.AlunoCurso", b =>
+                {
+                    b.Property<int>("AlunoId");
+
+                    b.Property<int>("CursoId");
+
+                    b.HasKey("AlunoId", "CursoId");
+
                     b.HasIndex("CursoId");
 
-                    b.ToTable("Aluno");
+                    b.ToTable("AlunoCurso");
                 });
 
             modelBuilder.Entity("TccGabrielDuarte.Model.Curso", b =>
@@ -51,16 +60,11 @@ namespace TccGabrielDuarte.Data.EF.Migrations
 
             modelBuilder.Entity("TccGabrielDuarte.Model.CursoDisciplina", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
                     b.Property<int>("CursoId");
 
                     b.Property<int>("DisciplinaId");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("CursoId");
+                    b.HasKey("CursoId", "DisciplinaId");
 
                     b.HasIndex("DisciplinaId");
 
@@ -78,7 +82,7 @@ namespace TccGabrielDuarte.Data.EF.Migrations
 
                     b.Property<string>("Nome");
 
-                    b.Property<int?>("TurmaId");
+                    b.Property<int>("TurmaId");
 
                     b.HasKey("Id");
 
@@ -87,47 +91,29 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                     b.ToTable("Disciplina");
                 });
 
-            modelBuilder.Entity("TccGabrielDuarte.Model.HistoricoEscolar", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AlunoId");
-
-                    b.Property<int>("Media");
-
-                    b.Property<int>("TurmaId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AlunoId");
-
-                    b.HasIndex("TurmaId");
-
-                    b.ToTable("HistoricoEscolar");
-                });
-
             modelBuilder.Entity("TccGabrielDuarte.Model.Turma", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Ano");
-
                     b.Property<string>("Professor");
-
-                    b.Property<int>("Semestre");
 
                     b.HasKey("Id");
 
                     b.ToTable("Turma");
                 });
 
-            modelBuilder.Entity("TccGabrielDuarte.Model.Aluno", b =>
+            modelBuilder.Entity("TccGabrielDuarte.Model.AlunoCurso", b =>
                 {
+                    b.HasOne("TccGabrielDuarte.Model.Aluno", "Aluno")
+                        .WithMany("AlunoCursos")
+                        .HasForeignKey("AlunoId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("TccGabrielDuarte.Model.Curso", "Curso")
-                        .WithMany("Alunos")
-                        .HasForeignKey("CursoId");
+                        .WithMany("AlunoCursos")
+                        .HasForeignKey("CursoId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("TccGabrielDuarte.Model.CursoDisciplina", b =>
@@ -145,20 +131,8 @@ namespace TccGabrielDuarte.Data.EF.Migrations
 
             modelBuilder.Entity("TccGabrielDuarte.Model.Disciplina", b =>
                 {
-                    b.HasOne("TccGabrielDuarte.Model.Turma")
-                        .WithMany("Disciplinas")
-                        .HasForeignKey("TurmaId");
-                });
-
-            modelBuilder.Entity("TccGabrielDuarte.Model.HistoricoEscolar", b =>
-                {
-                    b.HasOne("TccGabrielDuarte.Model.Aluno", "Aluno")
-                        .WithMany()
-                        .HasForeignKey("AlunoId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("TccGabrielDuarte.Model.Turma", "Turma")
-                        .WithMany()
+                        .WithMany("Disciplinas")
                         .HasForeignKey("TurmaId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -7,6 +7,7 @@ namespace TccGabrielDuarte.Model
     public class DataGenerator
     {
         private static readonly Random rnd = new Random();
+        private static readonly int disciplinasPorTurma = 5;
 
         public static List<Curso> Cursos()
         {
@@ -15,54 +16,75 @@ namespace TccGabrielDuarte.Model
                 new Curso
                 {
                     Nome = "Sistemas de Informação",
-                    Sigla = "SI"
+                    Sigla = "SI",
+                    CursoDisciplinas = new List<CursoDisciplina>(),
+                    AlunoCursos = new List<AlunoCurso>()
                 },
                 new Curso
                 {
                     Nome = "Administração",
-                    Sigla = "ADM"
+                    Sigla = "ADM",
+                    CursoDisciplinas = new List<CursoDisciplina>(),
+                    AlunoCursos = new List<AlunoCurso>()
                 },
                 new Curso
                 {
                     Nome = "Direito",
-                    Sigla = "DIR"
+                    Sigla = "DIR",
+                    CursoDisciplinas = new List<CursoDisciplina>(),
+                    AlunoCursos = new List<AlunoCurso>()
                 },
                 new Curso
                 {
                     Nome = "Gastronomia",
-                    Sigla = "GST"
+                    Sigla = "GST",
+                    CursoDisciplinas = new List<CursoDisciplina>(),
+                    AlunoCursos = new List<AlunoCurso>()
                 },
                 new Curso
                 {
                     Nome = "Psicologia",
-                    Sigla = "PSI"
+                    Sigla = "PSI",
+                    CursoDisciplinas = new List<CursoDisciplina>(),
+                    AlunoCursos = new List<AlunoCurso>()
                 },
             };
         }
 
-        public static List<Disciplina> Disciplinas(List<Curso> cursos)
+        public static List<Disciplina> Disciplinas(List<Curso> cursos, List<Turma> turmas)
         {
             var disciplinas = new List<Disciplina>();
-            foreach (var curso in cursos)
+            var disciplinasPorTurma = 5;
+
+            foreach (var turma in turmas)
             {
-                for (int i = 0; i < 11; i++)
+                for (int i = 0; i < disciplinasPorTurma; i++)
                 {
                     var disciplina = new Disciplina
                     {
-                        Nome = $"{curso.Nome}: {i + 1}",
-                        CodDisciplina = $"{curso.Sigla}{ (i + 1).ToString().PadLeft(3, '0')}",
+                        Nome = $"{turma.Curso.Nome}: {i + 1}",
+                        CodDisciplina = $"{turma.Curso.Sigla}{ (i + 1).ToString().PadLeft(3, '0')}",
                         Creditos = rnd.Next(1, 8),
-                        CursoDisciplinas = new List<CursoDisciplina>
+                        CursoDisciplinas = new List<CursoDisciplina>(),
+                        Turma = new Turma
                         {
-                            new CursoDisciplina
-                            {
-                                Curso = curso
-                            }
+                            Professor = $"Professor {turma.Curso.Nome}"
                         }
                     };
 
+                    var cursoDisc = new CursoDisciplina { Curso = turma.Curso, Disciplina = disciplina };
+                    disciplina.CursoDisciplinas.Add(cursoDisc);
+
+                    var curso = cursos.Where(x => x == cursoDisc.Curso).Single();
+                    curso.CursoDisciplinas.Add(cursoDisc);
+
                     disciplinas.Add(disciplina);
                 }
+            }
+
+            foreach (var curso in cursos)
+            {
+                
             }
 
             return disciplinas;
@@ -71,7 +93,7 @@ namespace TccGabrielDuarte.Model
         public static List<Aluno> Alunos(int qtAlunos, List<Curso> cursos)
         {
             var alunos = new List<Aluno>();
-            var alunosPorCurso = qtAlunos / 5;
+            var alunosPorCurso = qtAlunos / cursos.Count;
 
             foreach (var curso in cursos)
             {
@@ -79,10 +101,14 @@ namespace TccGabrielDuarte.Model
                 {
                     var aluno = new Aluno
                     {
-                        Curso = curso,
                         Nome = $"Aluno {i} {curso.Sigla}",
-                        TipoAluno = rnd.Next(1, 8)
+                        Semestre = rnd.Next(1, 8),
+                        AlunoCursos = new List<AlunoCurso>()
                     };
+
+                    var alunoCurso = new AlunoCurso { Aluno = aluno, Curso = curso };
+                    aluno.AlunoCursos.Add(alunoCurso);
+                    curso.AlunoCursos.Add(alunoCurso);
 
                     alunos.Add(aluno);
                 }
@@ -91,42 +117,16 @@ namespace TccGabrielDuarte.Model
             return alunos;
         }
 
-        public static List<HistoricoEscolar> HistoricosEscolares(List<Curso> cursos, List<Aluno> alunos, List<Turma> turmas)
-        {
-            var historicos = new List<HistoricoEscolar>();
-
-            foreach (var aluno in alunos)
-            {
-                var historico = new HistoricoEscolar
-                {
-                    Aluno = aluno,
-                    Media = rnd.Next(0, 10),
-                    Turma = turmas.First(x => x.Disciplinas.First().CursoDisciplinas.First().Curso == aluno.Curso)
-                };
-
-                historicos.Add(historico);
-            }
-
-            return historicos;
-        }
-
-        public static List<Turma> Turmas(List<Curso> cursos, List<Disciplina> disciplinas)
+        public static List<Turma> Turmas(List<Curso> cursos)
         {
             var turmas = new List<Turma>();
-
+            var turmasPorCurso = 10;
             foreach (var curso in cursos)
             {
-                var cursoDisciplinas = curso.CursoDisciplinas.Where(x => x.CursoId == curso.Id).ToList();
-                var disciplinasDoCurso = disciplinas.Where(x => cursoDisciplinas.Select(y => y.DisciplinaId).Contains(x.Id)).ToList();
-
-                var turma = new Turma
+                for (int i = 0; i < turmasPorCurso; i++)
                 {
-                    Ano = 2017,
-                    Disciplinas = disciplinasDoCurso,
-                    Professor = $"Professor {curso.Nome}",
-                    Semestre = 1
-                };
-                turmas.Add(turma);
+                    turmas.Add(new Turma { Professor = $"Professor {curso.Nome}", Curso = curso });
+                }
             }
 
             return turmas;

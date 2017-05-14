@@ -32,12 +32,19 @@ namespace TccGabrielDuarte
             var opcoes = Enum.GetValues(typeof(Enums.OPCOES)).Cast<int>();
 
             ConsoleKeyInfo opt;
+            bool repeat;
             
             do
             {
                 opt = ExibirOpcoes();
+                var sOpt = opt.KeyChar.ToString();
+
+                var isExitKey = opt.Key == ConsoleKey.S;
+                var isValidOptionKey = int.TryParse(sOpt, out int iOpt) && opcoes.Contains(iOpt);
+
+                repeat = !isExitKey && !isValidOptionKey;
             }
-            while (opt.Key != ConsoleKey.S && !opcoes.Contains(int.Parse(opt.KeyChar.ToString())));
+            while (repeat);
 
             if (opt.Key == ConsoleKey.S)
             {

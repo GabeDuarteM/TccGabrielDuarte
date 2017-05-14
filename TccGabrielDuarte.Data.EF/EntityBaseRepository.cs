@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using TccGabrielDuarte.Model;
 
 namespace TccGabrielDuarte.Data.EF
@@ -20,7 +19,6 @@ namespace TccGabrielDuarte.Data.EF
 
         public void Add(T entity)
         {
-            EntityEntry dbEntityEntry = _context.Entry<T>(entity);
             _context.Set<T>().Add(entity);
         }
 
@@ -31,7 +29,7 @@ namespace TccGabrielDuarte.Data.EF
 
         public void Delete(T entity)
         {
-            EntityEntry dbEntityEntry = _context.Entry<T>(entity);
+            EntityEntry dbEntityEntry = _context.Entry(entity);
             dbEntityEntry.State = EntityState.Deleted;
         }
 
@@ -41,13 +39,13 @@ namespace TccGabrielDuarte.Data.EF
 
             foreach (var entity in entities)
             {
-                _context.Entry<T>(entity).State = EntityState.Deleted;
+                _context.Entry(entity).State = EntityState.Deleted;
             }
         }
 
         public T Get(int id)
         {
-            return _context.Set<T>().FirstOrDefault(x => x.Id == id);
+            return _context.Set<T>().Find(id);
         }
 
         public T Get(Expression<Func<T, bool>> predicate)
@@ -85,7 +83,7 @@ namespace TccGabrielDuarte.Data.EF
 
         public void Update(T entity)
         {
-            EntityEntry dbEntityEntry = _context.Entry<T>(entity);
+            EntityEntry dbEntityEntry = _context.Entry(entity);
             dbEntityEntry.State = EntityState.Modified;
         }
     }

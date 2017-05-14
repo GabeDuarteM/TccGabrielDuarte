@@ -37,11 +37,11 @@ namespace TccGabrielDuarte.Data
         {
             using (var context = Conn)
             {
+                context.Database.ExecuteSqlCommand("DELETE FROM AlunoCurso WHERE AlunoId <= 500000");
+                context.Database.ExecuteSqlCommand("DELETE FROM AlunoCurso WHERE AlunoId > 500000");
+                context.Database.ExecuteSqlCommand("DELETE FROM CursoDisciplina");
                 context.Database.ExecuteSqlCommand("DELETE FROM Aluno WHERE id > 500000");
                 context.Database.ExecuteSqlCommand("DELETE FROM Aluno WHERE id <= 500000");
-                context.Database.ExecuteSqlCommand("DELETE FROM HistoricoEscolar WHERE id > 500000");
-                context.Database.ExecuteSqlCommand("DELETE FROM HistoricoEscolar WHERE id <= 500000");
-                context.Database.ExecuteSqlCommand("DELETE FROM CursoDisciplina");
                 context.Database.ExecuteSqlCommand("DELETE FROM Disciplina");
                 context.Database.ExecuteSqlCommand("DELETE FROM Turma");
                 context.Database.ExecuteSqlCommand("DELETE FROM Curso");
@@ -53,8 +53,6 @@ namespace TccGabrielDuarte.Data
                 else if (Banco == Enums.BANCOS.SQLServer)
                 {
                     context.Database.ExecuteSqlCommand("DBCC CHECKIDENT ('Aluno',RESEED, 0)");
-                    context.Database.ExecuteSqlCommand("DBCC CHECKIDENT ('HistoricoEscolar',RESEED, 0)");
-                    context.Database.ExecuteSqlCommand("DBCC CHECKIDENT ('CursoDisciplina',RESEED, 0)");
                     context.Database.ExecuteSqlCommand("DBCC CHECKIDENT ('Disciplina',RESEED, 0)");
                     context.Database.ExecuteSqlCommand("DBCC CHECKIDENT ('Turma',RESEED, 0)");
                     context.Database.ExecuteSqlCommand("DBCC CHECKIDENT ('Curso',RESEED, 0)");
@@ -77,15 +75,6 @@ namespace TccGabrielDuarte.Data
             using (var context = Conn)
             {
                 var repo = new DisciplinaRepository(context);
-                return repo.GetAll().Count;
-            }
-        }
-
-        public int GetListaHistoricos()
-        {
-            using (var context = Conn)
-            {
-                var repo = new HistoricoEscolarRepository(context);
                 return repo.GetAll().Count;
             }
         }

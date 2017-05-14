@@ -33,12 +33,6 @@ namespace TccGabrielDuarte.Data
             return repo.GetAll().Count;
         }
 
-        public int GetListaHistoricos()
-        {
-            var repo = new HistoricoEscolarRepository(Conn);
-            return repo.GetAll().Count;
-        }
-
         public int GetListaTurmas()
         {
             var repo = new TurmaRepository(Conn);
@@ -52,8 +46,9 @@ namespace TccGabrielDuarte.Data
                 conn.Open();
 
                 conn.Execute("DELETE FROM Aluno");
-                conn.Execute("DELETE FROM HistoricoEscolar");
+                conn.Execute("DELETE FROM AlunoCurso");
                 conn.Execute("DELETE FROM CursoDisciplina");
+                conn.Execute("DELETE FROM Curso");
                 conn.Execute("DELETE FROM Disciplina");
                 conn.Execute("DELETE FROM Turma");
             }

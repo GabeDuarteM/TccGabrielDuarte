@@ -6,7 +6,7 @@ namespace TccGabrielDuarte.Model
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public int TipoAluno { get; set; }
-        public virtual Curso Curso { get; set; }
+        public int Semestre { get; set; }
+        public ICollection<AlunoCurso> AlunoCursos { get; set; }
     }
 }

@@ -5,9 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="1.1.1" />
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TccGabrielDuarte.CrossCutting\TccGabrielDuarte.CrossCutting.csproj" />
-    <ProjectReference Include="..\TccGabrielDuarte.Data.Dapper\TccGabrielDuarte.Data.Dapper.csproj" />
-    <ProjectReference Include="..\TccGabrielDuarte.Data.EF\TccGabrielDuarte.Data.EF.csproj" />
   </ItemGroup>
 
 </Project>

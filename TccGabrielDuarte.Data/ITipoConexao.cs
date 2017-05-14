@@ -7,13 +7,16 @@ namespace TccGabrielDuarte.CrossCutting
     {
         Enums.BANCOS Banco { get; set; }
 
+        void Seed(int qtAlunos);
+
+        void LimparBase();
+
         int GetListaAlunos();
 
-        void Seed(int qtAlunos);
-        void LimparBase();
         int GetListaCursos();
+
         int GetListaDisciplinas();
-        int GetListaHistoricos();
+
         int GetListaTurmas();
     }
 }
