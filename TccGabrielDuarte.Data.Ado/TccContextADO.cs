@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using Microsoft.Data.Sqlite;
 using TccGabrielDuarte.CrossCutting;
 using TccGabrielDuarte.Model;
@@ -13,7 +14,6 @@ namespace TccGabrielDuarte.Data.Ado
         private readonly string connString;
 
         public IDbConnection Conn { get => CreateConn(); }
-
         public Enums.BANCOS Banco { get; set; }
 
         public TccContextADO(Enums.BANCOS banco)
@@ -29,6 +29,7 @@ namespace TccGabrielDuarte.Data.Ado
                     break;
             }
         }
+
         public IDbConnection CreateConn()
         {
             switch (Banco)
@@ -47,96 +48,124 @@ namespace TccGabrielDuarte.Data.Ado
             using (var conn = Conn)
             {
                 conn.Open();
-
                 switch (Banco)
                 {
                     case Enums.BANCOS.SQLite:
-                        {
-
-                            break;
-                        }
+                        break;
                     case Enums.BANCOS.SQLServer:
                         {
                             var cursos = DataGenerator.Cursos();
-                            var cursoInsert = "INSERT INTO Curso (Nome, Sigla) OUTPUT INSERTED.Id VALUES (@Nome, @Sigla)";
 
                             foreach (var curso in cursos)
                             {
-                                using (var cmd = new SqlCommand(cursoInsert, (SqlConnection)conn) { CommandType = CommandType.Text })
+                                var sql = MontarSql(curso.GetType(), nameof(Curso.Nome), nameof(Curso.Sigla));
+
+                                using (var cmd = new SqlCommand(sql, (SqlConnection)conn) { CommandType = CommandType.Text })
                                 {
                                     cmd.Parameters.AddWithValue("@Nome", curso.Nome);
                                     cmd.Parameters.AddWithValue("@Sigla", curso.Sigla);
 
-                                    curso.Id = (int)cmd.ExecuteScalar();
+                                    cmd.ExecuteNonQuery();
                                 }
                             }
 
-                            var disciplinas = DataGenerator.Disciplinas(cursos);
-                            var discInsert = $@"INSERT INTO {nameof(Disciplina)} ({nameof(Disciplina.Nome)}, {nameof(Disciplina.CodDisciplina)}, {nameof(Disciplina.Creditos)}) OUTPUT INSERTED.Id 
-                                                    VALUES (@{nameof(Disciplina.Nome)}, @{nameof(Disciplina.CodDisciplina)}, @{nameof(Disciplina.Creditos)})";
-
-                            //var cursoDiscInsert = $@"INSERT INTO {nameof(CursoDisciplina)} ({nameof(CursoDisciplina.CursoId)}, {nameof(CursoDisciplina.DisciplinaId)})
-                            //                        VALUES (@{nameof(CursoDisciplina.CursoId)}, @{nameof(CursoDisciplina.DisciplinaId)})";
-
-                            foreach (var disciplina in disciplinas)
+                            using (var cmd = new SqlCommand("SELECT * FROM Curso", (SqlConnection)conn) { CommandType = CommandType.Text })
+                            using (var dr = cmd.ExecuteReader())
                             {
-                                using (var cmd = new SqlCommand(discInsert, (SqlConnection)conn) { CommandType = CommandType.Text })
-                                {
-                                    cmd.Parameters.AddWithValue($"@{nameof(disciplina.Nome)}", disciplina.Nome);
-                                    cmd.Parameters.AddWithValue($"@{nameof(disciplina.CodDisciplina)}", disciplina.CodDisciplina);
-                                    cmd.Parameters.AddWithValue($"@{nameof(disciplina.Creditos)}", disciplina.Creditos);
-
-                                    disciplina.Id = (int)cmd.ExecuteScalar();
-
-                                    //cmd.CommandText = cursoDiscInsert;
-
-                                    //foreach (var cursoDisc in disciplina.CursoDisciplinas)
-                                    //{
-                                    //    cmd.Parameters.AddWithValue($"@{nameof(cursoDisc.DisciplinaId)}", cursoDisc.DisciplinaId);
-                                    //    cmd.Parameters.AddWithValue($"@{nameof(cursoDisc.CursoId)}", cursoDisc.CursoId);
-
-                                    //    cmd.ExecuteNonQuery();
-                                    //}
-                                }
+                                cursos = ModelHelper.PopularListaCursos(dr);
                             }
 
-                            var turmas = DataGenerator.Turmas(cursos, disciplinas);
-                            var turmaInsert = $@"INSERT INTO {nameof(Turma)} ({nameof(Turma.Professor)}, {nameof(Turma.Semestre)})
-                                                    VALUES (@{nameof(Turma.Professor)}, @{nameof(Turma.Semestre)})";
+                            var turmas = DataGenerator.Turmas(cursos);
 
                             foreach (var turma in turmas)
                             {
-                                using (var cmd = new SqlCommand(turmaInsert, (SqlConnection)conn) { CommandType = CommandType.Text })
+                                var sql = MontarSql(turma.GetType(), nameof(Turma.Professor), nameof(Turma.CursoId));
+
+                                using (var cmd = new SqlCommand(sql, (SqlConnection)conn) { CommandType = CommandType.Text })
                                 {
-                                    cmd.Parameters.AddWithValue($"@{nameof(Turma.Ano)}", turma.Ano);
-                                    cmd.Parameters.AddWithValue($"@{nameof(Turma.Professor)}", turma.Professor);
-                                    cmd.Parameters.AddWithValue($"@{nameof(Turma.Semestre)}", turma.Semestre);
+                                    cmd.Parameters.AddWithValue("@Professor", turma.Professor);
+                                    cmd.Parameters.AddWithValue("@CursoId", turma.CursoId);
 
-                                    turma.Id = (int)cmd.ExecuteScalar();
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
 
-                                    cmd.CommandText = 
+                            using (var cmd = new SqlCommand("SELECT * FROM Turma", (SqlConnection)conn) { CommandType = CommandType.Text })
+                            using (var dr = cmd.ExecuteReader())
+                            {
+                                turmas = ModelHelper.PopularListaTurmas(dr, cursos);
+                            }
+
+                            var disciplinas = DataGenerator.Disciplinas(cursos, turmas);
+
+                            foreach (var disciplina in disciplinas)
+                            {
+                                var sql = MontarSql(disciplina.GetType(), nameof(Disciplina.Nome), nameof(Disciplina.CodDisciplina), nameof(Disciplina.Creditos), nameof(Disciplina.TurmaId));
+
+                                using (var cmd = new SqlCommand(sql, (SqlConnection)conn) { CommandType = CommandType.Text })
+                                {
+                                    cmd.Parameters.AddWithValue("@Nome", disciplina.Nome);
+                                    cmd.Parameters.AddWithValue("@CodDisciplina", disciplina.CodDisciplina);
+                                    cmd.Parameters.AddWithValue("@Creditos", disciplina.Creditos);
+                                    cmd.Parameters.AddWithValue("@TurmaId", disciplina.TurmaId);
+
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
+
+                            using (var cmd = new SqlCommand("SELECT * FROM Disciplina", (SqlConnection)conn))
+                            using (var dr = cmd.ExecuteReader())
+                            {
+                                disciplinas = ModelHelper.PopularListaDisciplinas(dr, disciplinas, turmas);
+                            }
+
+                            var lstCursoDisciplina = disciplinas.SelectMany(x => x.CursoDisciplinas);
+
+                            foreach (var cursoDisc in lstCursoDisciplina)
+                            {
+                                var sql = MontarSql(cursoDisc.GetType(), nameof(CursoDisciplina.CursoId), nameof(CursoDisciplina.DisciplinaId));
+
+                                using (var cmd = new SqlCommand(sql, (SqlConnection)conn) { CommandType = CommandType.Text })
+                                {
+                                    cmd.Parameters.AddWithValue("@CursoId", cursoDisc.CursoId);
+                                    cmd.Parameters.AddWithValue("@DisciplinaId", cursoDisc.DisciplinaId);
+
+                                    cmd.ExecuteNonQuery();
                                 }
                             }
 
                             var alunos = DataGenerator.Alunos(qtAlunos, cursos);
-                            var historicos = DataGenerator.HistoricosEscolares(cursos, alunos, turmas);
 
+                            foreach (var aluno in alunos)
+                            {
+                                var sql = MontarSql(aluno.GetType(), nameof(Aluno.Nome), nameof(Aluno.Semestre));
 
+                                using (var cmd = new SqlCommand(sql, (SqlConnection)conn) { CommandType = CommandType.Text })
+                                {
+                                    cmd.Parameters.AddWithValue("@Nome", aluno.Nome);
+                                    cmd.Parameters.AddWithValue("@Semestre", aluno.Semestre);
 
-                            
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
 
-                            Conn.Insert(turmas);
-
-                            Conn.Insert(alunos);
-
-                            Conn.Insert(historicos);
-
-                            break;
+                            using (var cmd = new SqlCommand("SELECT * FROM Aluno", (SqlConnection)conn))
+                            using (var dr = cmd.ExecuteReader())
+                            {
+                                alunos = ModelHelper.PopularListaAlunos(dr, alunos);
+                            }
                         }
-                    default:
                         break;
                 }
             }
+        }
+
+        private string MontarSql(Type type, params string[] sqlCampos)
+        {
+            var sqlInsert = $"INSERT INTO {type.Name} ({string.Join(", ", sqlCampos)})";
+            var sqlValues = $"VALUES ({string.Join(", ", sqlCampos.Select(x => "@" + x))})";
+
+            return $"{sqlInsert} {sqlValues}";
         }
     }
 }

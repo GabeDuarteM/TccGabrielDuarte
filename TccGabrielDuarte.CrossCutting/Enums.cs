@@ -20,7 +20,8 @@ namespace TccGabrielDuarte.CrossCutting
         public enum PROVIDERS
         {
             Dapper,
-            EF
+            EF,
+            ADO
         }
 
         public enum BANCOS

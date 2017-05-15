@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TccGabrielDuarte.CrossCutting\TccGabrielDuarte.CrossCutting.csproj" />
+    <ProjectReference Include="..\TccGabrielDuarte.Data.Ado\TccGabrielDuarte.Data.Ado.csproj" />
     <ProjectReference Include="..\TccGabrielDuarte.Data.Dapper\TccGabrielDuarte.Data.Dapper.csproj" />
     <ProjectReference Include="..\TccGabrielDuarte.Data.EF\TccGabrielDuarte.Data.EF.csproj" />
   </ItemGroup>

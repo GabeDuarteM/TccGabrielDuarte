@@ -19,6 +19,9 @@ namespace TccGabrielDuarte.Data
                 case Enums.PROVIDERS.EF:
                     Conn = new ConnEF(banco);
                     break;
+                case Enums.PROVIDERS.ADO:
+                    Conn = new ConnAdo(banco);
+                    break;
                 default:
                     break;
             }
