@@ -66,13 +66,11 @@ namespace TccGabrielDuarte.Model
                         CodDisciplina = $"{turma.Curso.Sigla}{ (i + 1).ToString().PadLeft(3, '0')}",
                         Creditos = rnd.Next(1, 8),
                         CursoDisciplinas = new List<CursoDisciplina>(),
-                        Turma = new Turma
-                        {
-                            Professor = $"Professor {turma.Curso.Nome}"
-                        }
+                        Turma = turma,
+                        TurmaId = turma.Id
                     };
 
-                    var cursoDisc = new CursoDisciplina { Curso = turma.Curso, Disciplina = disciplina };
+                    var cursoDisc = new CursoDisciplina { Curso = turma.Curso, CursoId = turma.CursoId, Disciplina = disciplina, DisciplinaId = disciplina.Id };
                     disciplina.CursoDisciplinas.Add(cursoDisc);
 
                     var curso = cursos.Where(x => x == cursoDisc.Curso).Single();
@@ -80,11 +78,6 @@ namespace TccGabrielDuarte.Model
 
                     disciplinas.Add(disciplina);
                 }
-            }
-
-            foreach (var curso in cursos)
-            {
-                
             }
 
             return disciplinas;
@@ -101,12 +94,12 @@ namespace TccGabrielDuarte.Model
                 {
                     var aluno = new Aluno
                     {
-                        Nome = $"Aluno {i} {curso.Sigla}",
+                        Nome = $"Aluno {i + 1} {curso.Sigla}",
                         Semestre = rnd.Next(1, 8),
                         AlunoCursos = new List<AlunoCurso>()
                     };
 
-                    var alunoCurso = new AlunoCurso { Aluno = aluno, Curso = curso };
+                    var alunoCurso = new AlunoCurso { Aluno = aluno, Curso = curso, CursoId = curso.Id };
                     aluno.AlunoCursos.Add(alunoCurso);
                     curso.AlunoCursos.Add(alunoCurso);
 
@@ -125,7 +118,7 @@ namespace TccGabrielDuarte.Model
             {
                 for (int i = 0; i < turmasPorCurso; i++)
                 {
-                    turmas.Add(new Turma { Professor = $"Professor {curso.Nome}", Curso = curso });
+                    turmas.Add(new Turma { Professor = $"Professor {curso.Nome}", Curso = curso, CursoId = curso.Id });
                 }
             }
 

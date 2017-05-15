@@ -38,19 +38,6 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Turma",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Professor = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Turma", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AlunoCurso",
                 columns: table => new
                 {
@@ -65,13 +52,33 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                         column: x => x.AlunoId,
                         principalTable: "Aluno",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AlunoCurso_Curso_CursoId",
                         column: x => x.CursoId,
                         principalTable: "Curso",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Turma",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CursoId = table.Column<int>(nullable: false),
+                    Professor = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Turma", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Turma_Curso_CursoId",
+                        column: x => x.CursoId,
+                        principalTable: "Curso",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,7 +100,7 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                         column: x => x.TurmaId,
                         principalTable: "Turma",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,13 +118,13 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                         column: x => x.CursoId,
                         principalTable: "Curso",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CursoDisciplina_Disciplina_DisciplinaId",
                         column: x => x.DisciplinaId,
                         principalTable: "Disciplina",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -134,6 +141,11 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                 name: "IX_Disciplina_TurmaId",
                 table: "Disciplina",
                 column: "TurmaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Turma_CursoId",
+                table: "Turma",
+                column: "CursoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -148,13 +160,13 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                 name: "Aluno");
 
             migrationBuilder.DropTable(
-                name: "Curso");
-
-            migrationBuilder.DropTable(
                 name: "Disciplina");
 
             migrationBuilder.DropTable(
                 name: "Turma");
+
+            migrationBuilder.DropTable(
+                name: "Curso");
         }
     }
 }

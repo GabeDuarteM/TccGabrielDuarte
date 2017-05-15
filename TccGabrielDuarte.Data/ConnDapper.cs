@@ -45,12 +45,25 @@ namespace TccGabrielDuarte.Data
             {
                 conn.Open();
 
-                conn.Execute("DELETE FROM Aluno");
                 conn.Execute("DELETE FROM AlunoCurso");
+                conn.Execute("DELETE FROM Aluno");
                 conn.Execute("DELETE FROM CursoDisciplina");
-                conn.Execute("DELETE FROM Curso");
                 conn.Execute("DELETE FROM Disciplina");
                 conn.Execute("DELETE FROM Turma");
+                conn.Execute("DELETE FROM Curso");
+
+                if (Banco == Enums.BANCOS.SQLite)
+                {
+                    conn.Execute("VACUUM");
+                }
+                else if (Banco == Enums.BANCOS.SQLServer)
+                {
+                    conn.Execute("DBCC CHECKIDENT ('Aluno',RESEED, 0)");
+                    conn.Execute("DBCC CHECKIDENT ('Disciplina',RESEED, 0)");
+                    conn.Execute("DBCC CHECKIDENT ('Turma',RESEED, 0)");
+                    conn.Execute("DBCC CHECKIDENT ('Curso',RESEED, 0)");
+
+                }
             }
         }
 

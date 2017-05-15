@@ -95,9 +95,13 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("CursoId");
+
                     b.Property<string>("Professor");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CursoId");
 
                     b.ToTable("Turma");
                 });
@@ -106,34 +110,36 @@ namespace TccGabrielDuarte.Data.EF.Migrations
                 {
                     b.HasOne("TccGabrielDuarte.Model.Aluno", "Aluno")
                         .WithMany("AlunoCursos")
-                        .HasForeignKey("AlunoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AlunoId");
 
                     b.HasOne("TccGabrielDuarte.Model.Curso", "Curso")
                         .WithMany("AlunoCursos")
-                        .HasForeignKey("CursoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CursoId");
                 });
 
             modelBuilder.Entity("TccGabrielDuarte.Model.CursoDisciplina", b =>
                 {
                     b.HasOne("TccGabrielDuarte.Model.Curso", "Curso")
                         .WithMany("CursoDisciplinas")
-                        .HasForeignKey("CursoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CursoId");
 
                     b.HasOne("TccGabrielDuarte.Model.Disciplina", "Disciplina")
                         .WithMany("CursoDisciplinas")
-                        .HasForeignKey("DisciplinaId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("DisciplinaId");
                 });
 
             modelBuilder.Entity("TccGabrielDuarte.Model.Disciplina", b =>
                 {
                     b.HasOne("TccGabrielDuarte.Model.Turma", "Turma")
                         .WithMany("Disciplinas")
-                        .HasForeignKey("TurmaId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TurmaId");
+                });
+
+            modelBuilder.Entity("TccGabrielDuarte.Model.Turma", b =>
+                {
+                    b.HasOne("TccGabrielDuarte.Model.Curso", "Curso")
+                        .WithMany()
+                        .HasForeignKey("CursoId");
                 });
         }
     }

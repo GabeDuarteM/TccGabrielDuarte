@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using TccGabrielDuarte.CrossCutting;
 using TccGabrielDuarte.Model;
 
@@ -43,6 +44,11 @@ namespace TccGabrielDuarte.Data.EF
             modelBuilder.Entity<CursoDisciplina>()
                 .HasOne(x => x.Curso)
                 .WithMany(x => x.CursoDisciplinas);
+
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                relationship.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -62,16 +68,12 @@ namespace TccGabrielDuarte.Data.EF
             var rnd = new Random();
 
             var cursos = DataGenerator.Cursos();
+            var turmas = DataGenerator.Turmas(cursos);
+            var disciplinas = DataGenerator.Disciplinas(cursos, turmas);
+            var alunos = DataGenerator.Alunos(qtAlunos, cursos);
 
             Curso.AddRange(cursos);
-            SaveChanges();
-
-            var disciplinas = DataGenerator.Disciplinas(cursos);
-
             Disciplina.AddRange(disciplinas);
-            SaveChanges();
-            
-            var alunos = DataGenerator.Alunos(qtAlunos, cursos);
             Aluno.AddRange(alunos);
 
             SaveChanges();
