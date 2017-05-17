@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using Microsoft.Data.Sqlite;
 using TccGabrielDuarte.CrossCutting;
 using TccGabrielDuarte.Data.Ado;
 
@@ -50,6 +51,32 @@ namespace TccGabrielDuarte.Data
                 switch (Banco)
                 {
                     case Enums.BANCOS.SQLite:
+                        using (var cmd = new SqliteCommand())
+                        {
+                            cmd.CommandType = System.Data.CommandType.Text;
+                            cmd.Connection = (SqliteConnection)conn;
+
+                            cmd.CommandText = "DELETE FROM AlunoCurso";
+                            cmd.ExecuteNonQuery();
+
+                            cmd.CommandText = "DELETE FROM Aluno";
+                            cmd.ExecuteNonQuery();
+
+                            cmd.CommandText = "DELETE FROM CursoDisciplina";
+                            cmd.ExecuteNonQuery();
+
+                            cmd.CommandText = "DELETE FROM Disciplina";
+                            cmd.ExecuteNonQuery();
+
+                            cmd.CommandText = "DELETE FROM Turma";
+                            cmd.ExecuteNonQuery();
+
+                            cmd.CommandText = "DELETE FROM Curso";
+                            cmd.ExecuteNonQuery();
+
+                            cmd.CommandText = "VACUUM";
+                            cmd.ExecuteNonQuery();
+                        }
                         break;
                     case Enums.BANCOS.SQLServer:
                         using (var cmd = new SqlCommand())

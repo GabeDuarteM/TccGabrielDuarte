@@ -14,7 +14,7 @@ namespace TccGabrielDuarte.CrossCutting
             {
                 var curso = new Curso
                 {
-                    Id = (int)dr[nameof(Curso.Id)],
+                    Id = int.Parse(dr[nameof(Curso.Id)].ToString()),
                     Nome = (string)dr[nameof(Curso.Nome)],
                     Sigla = (string)dr[nameof(Curso.Sigla)],
                     AlunoCursos = new List<AlunoCurso>(),
@@ -35,10 +35,10 @@ namespace TccGabrielDuarte.CrossCutting
             {
                 var turma = new Turma
                 {
-                    Id = (int)dr[nameof(Turma.Id)],
-                    CursoId = (int)dr[nameof(Turma.CursoId)],
+                    Id = int.Parse(dr[nameof(Turma.Id)].ToString()),
+                    CursoId = int.Parse(dr[nameof(Turma.CursoId)].ToString()),
                     Professor = (string)dr[nameof(Turma.Professor)],
-                    Curso = lstCurso.Find(x => x.Id == (int)dr[nameof(Turma.CursoId)])
+                    Curso = lstCurso.Find(x => x.Id == int.Parse(dr[nameof(Turma.CursoId)].ToString()))
                 };
 
                 lstTurma.Add(turma);
@@ -55,17 +55,17 @@ namespace TccGabrielDuarte.CrossCutting
             {
                 foreach (var cursoDisc in lstDisciplina[i].CursoDisciplinas)
                 {
-                    cursoDisc.DisciplinaId = (int)dr[nameof(Disciplina.Id)];
+                    cursoDisc.DisciplinaId = int.Parse(dr[nameof(Disciplina.Id)].ToString());
                 }
 
                 var disciplina = new Disciplina
                 {
-                    Id = (int)dr[nameof(Disciplina.Id)],
+                    Id = int.Parse(dr[nameof(Disciplina.Id)].ToString()),
                     CodDisciplina = (string)dr[nameof(Disciplina.CodDisciplina)],
-                    Creditos = (int)dr[nameof(Disciplina.Creditos)],
+                    Creditos = int.Parse(dr[nameof(Disciplina.Creditos)].ToString()),
                     Nome = (string)dr[nameof(Disciplina.Nome)],
-                    TurmaId = (int)dr[nameof(Disciplina.TurmaId)],
-                    Turma = lstTurma.Find(x => x.Id == (int)dr[nameof(Disciplina.TurmaId)]),
+                    TurmaId = int.Parse(dr[nameof(Disciplina.TurmaId)].ToString()),
+                    Turma = lstTurma.Find(x => x.Id == int.Parse(dr[nameof(Disciplina.TurmaId)].ToString())),
                     CursoDisciplinas = lstDisciplina[i].CursoDisciplinas
                 };
 
@@ -85,14 +85,14 @@ namespace TccGabrielDuarte.CrossCutting
             {
                 foreach (var alunoCurso in lstAlunos[i].AlunoCursos)
                 {
-                    alunoCurso.AlunoId = (int)dr[nameof(Aluno.Id)];
+                    alunoCurso.AlunoId = int.Parse(dr[nameof(Aluno.Id)].ToString());
                 }
 
                 var aluno = new Aluno
                 {
-                    Id = (int)dr[nameof(Aluno.Id)],
+                    Id = int.Parse(dr[nameof(Aluno.Id)].ToString()),
                     Nome = (string)dr[nameof(Aluno.Nome)],
-                    Semestre = (int)dr[nameof(Aluno.Semestre)],
+                    Semestre = int.Parse(dr[nameof(Aluno.Semestre)].ToString()),
                     AlunoCursos = lstAlunos[i].AlunoCursos
                 };
 
