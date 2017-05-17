@@ -45,18 +45,14 @@ namespace TccGabrielDuarte.Data.Ado
 
         public void Seed(int qtAlunos)
         {
-            using (var conn = Conn)
+            switch (Banco)
             {
-                conn.Open();
-                switch (Banco)
-                {
-                    case Enums.BANCOS.SQLite:
-                        PopularTabelas<SqliteConnection, SqliteCommand, SqliteParameter>(qtAlunos);
-                        break;
-                    case Enums.BANCOS.SQLServer:
-                        PopularTabelas<SqlConnection, SqlCommand, SqlParameter>(qtAlunos);
-                        break;
-                }
+                case Enums.BANCOS.SQLite:
+                    PopularTabelas<SqliteConnection, SqliteCommand, SqliteParameter>(qtAlunos);
+                    break;
+                case Enums.BANCOS.SQLServer:
+                    PopularTabelas<SqlConnection, SqlCommand, SqlParameter>(qtAlunos);
+                    break;
             }
         }
 
