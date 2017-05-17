@@ -7,7 +7,6 @@ namespace TccGabrielDuarte.Model
     public class DataGenerator
     {
         private static readonly Random rnd = new Random();
-        private static readonly int disciplinasPorTurma = 5;
 
         public static List<Curso> Cursos()
         {

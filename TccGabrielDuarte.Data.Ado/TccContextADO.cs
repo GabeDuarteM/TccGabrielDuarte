@@ -56,7 +56,7 @@ namespace TccGabrielDuarte.Data.Ado
             }
         }
 
-        private void PopularTabelas<TConnection, TCommand, TParameter>(int qtAlunos) 
+        private void PopularTabelas<TConnection, TCommand, TParameter>(int qtAlunos)
             where TConnection : IDbConnection, new() 
             where TCommand : IDbCommand, new() 
             where TParameter : IDbDataParameter, new()

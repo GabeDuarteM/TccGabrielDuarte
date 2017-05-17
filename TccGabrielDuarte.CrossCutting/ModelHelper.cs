@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using TccGabrielDuarte.Model;
 
 namespace TccGabrielDuarte.CrossCutting
@@ -45,6 +46,15 @@ namespace TccGabrielDuarte.CrossCutting
             }
 
             return lstTurma;
+        }
+
+        public static ICollection<IEntityBase> PopularListaModel(Type type, IDataReader dr)
+        {
+            if (type == typeof(Aluno))
+            {
+                
+            }
+            return null;
         }
 
         public static List<Disciplina> PopularListaDisciplinas(System.Data.IDataReader dr, List<Disciplina> lstDisciplina, List<Turma> lstTurma)
