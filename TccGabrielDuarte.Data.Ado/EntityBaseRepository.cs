@@ -25,15 +25,16 @@ namespace TccGabrielDuarte.Data.Ado
                 IDbCommand cmd = null;
                 switch (_context.Banco)
                 {
-                    case CrossCutting.Enums.BANCOS.SQLite:
+                    case Enums.BANCOS.SQLite:
                         cmd = new SqliteCommand();
                         break;
-                    case CrossCutting.Enums.BANCOS.SQLServer:
+                    case Enums.BANCOS.SQLServer:
                         cmd = new SqlCommand();
                         break;
                     default:
                         break;
                 }
+
                 using (cmd)
                 {
                     cmd.CommandText = "SELECT * FROM " + typeof(T).Name;
@@ -42,14 +43,24 @@ namespace TccGabrielDuarte.Data.Ado
                     conn.Open();
                     using (var dr = cmd.ExecuteReader())
                     {
-                        //return ModelHelper.PopularListaModel(typeof(T), dr);
+                        if (typeof(T) == typeof(Aluno))
+                        {
+                            return ModelHelper.PopularListaAlunos(dr) as List<T>;
+                        }
+                        else if (typeof(T) == typeof(Curso))
+                        {
+                            return ModelHelper.PopularListaCursos(dr) as List<T>;
+                        }
+                        else if (typeof(T) == typeof(Disciplina))
+                        {
+                            return ModelHelper.PopularListaDisciplinas(dr) as List<T>;
+                        }
+                        else if (typeof(T) == typeof(Turma))
+                        {
+                            return ModelHelper.PopularListaTurmas(dr) as List<T>;
+                        }
                     }
-
-
                 }
-                var sql = "SELECT * FROM " + typeof(T).Name;
-                conn.Open();
-                //return conn.Query<T>(sql).AsList();
             }
 
             return null;

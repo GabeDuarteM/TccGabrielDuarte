@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using TccGabrielDuarte.CrossCutting;
 using TccGabrielDuarte.Data.Ado;
@@ -19,27 +18,26 @@ namespace TccGabrielDuarte.Data
 
         public int GetListaAlunos()
         {
-            throw new NotImplementedException();
+            var repo = new AlunoRepository(Conn);
+            return repo.GetAll().Count;
         }
 
         public int GetListaCursos()
         {
-            throw new NotImplementedException();
+            var repo = new CursoRepository(Conn);
+            return repo.GetAll().Count;
         }
 
         public int GetListaDisciplinas()
         {
-            throw new NotImplementedException();
-        }
-
-        public int GetListaHistoricos()
-        {
-            throw new NotImplementedException();
+            var repo = new DisciplinaRepository(Conn);
+            return repo.GetAll().Count;
         }
 
         public int GetListaTurmas()
         {
-            throw new NotImplementedException();
+            var repo = new TurmaRepository(Conn);
+            return repo.GetAll().Count;
         }
 
         public void LimparBase()

@@ -118,7 +118,7 @@ namespace TccGabrielDuarte.Data.Ado
 
                     using (var dr = cmd.ExecuteReader())
                     {
-                        turmas = ModelHelper.PopularListaTurmas(dr, cursos);
+                        turmas = ModelHelper.PopularListaTurmasCompleta(dr, cursos);
                     }
                 }
 
@@ -149,7 +149,7 @@ namespace TccGabrielDuarte.Data.Ado
 
                     using (var dr = cmd.ExecuteReader())
                     {
-                        disciplinas = ModelHelper.PopularListaDisciplinas(dr, disciplinas, turmas);
+                        disciplinas = ModelHelper.PopularListaDisciplinasCompleta(dr, disciplinas);
                     }
                 }
 
@@ -181,24 +181,11 @@ namespace TccGabrielDuarte.Data.Ado
                     {
                         cmd.CommandText = sql;
                         cmd.Connection = conn;
-                        
 
                         cmd.Parameters.Add(new TParameter() { ParameterName = "@Nome", Value = aluno.Nome });
                         cmd.Parameters.Add(new TParameter() { ParameterName = "@Semestre", Value = aluno.Semestre });
 
                         cmd.ExecuteNonQuery();
-                    }
-                }
-
-                using (var cmd = new TCommand())
-                {
-                    cmd.CommandText = "SELECT * FROM Aluno";
-                    cmd.Connection = conn;
-                    
-
-                    using (var dr = cmd.ExecuteReader())
-                    {
-                        alunos = ModelHelper.PopularListaAlunos(dr, alunos);
                     }
                 }
             }

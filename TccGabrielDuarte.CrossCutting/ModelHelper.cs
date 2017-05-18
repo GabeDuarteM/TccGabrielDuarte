@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using TccGabrielDuarte.Model;
 
 namespace TccGabrielDuarte.CrossCutting
 {
     public class ModelHelper
     {
-        public static List<Curso> PopularListaCursos(System.Data.IDataReader dr)
+        public static List<Curso> PopularListaCursos(IDataReader dr)
         {
             var lstCurso = new List<Curso>();
 
@@ -28,7 +28,19 @@ namespace TccGabrielDuarte.CrossCutting
             return lstCurso;
         }
 
-        public static List<Turma> PopularListaTurmas(System.Data.IDataReader dr, List<Curso> lstCurso)
+        public static List<Turma> PopularListaTurmasCompleta(IDataReader dr, List<Curso> lstCurso)
+        {
+            var lstTurma = PopularListaTurmas(dr);
+
+            foreach (var turma in lstTurma)
+            {
+                turma.Curso = lstCurso.Find(x => x.Id == turma.CursoId);
+            }
+
+            return lstTurma;
+        }
+
+        public static List<Turma> PopularListaTurmas(IDataReader dr)
         {
             var lstTurma = new List<Turma>();
 
@@ -38,8 +50,7 @@ namespace TccGabrielDuarte.CrossCutting
                 {
                     Id = int.Parse(dr[nameof(Turma.Id)].ToString()),
                     CursoId = int.Parse(dr[nameof(Turma.CursoId)].ToString()),
-                    Professor = (string)dr[nameof(Turma.Professor)],
-                    Curso = lstCurso.Find(x => x.Id == int.Parse(dr[nameof(Turma.CursoId)].ToString()))
+                    Professor = (string)dr[nameof(Turma.Professor)]
                 };
 
                 lstTurma.Add(turma);
@@ -48,26 +59,26 @@ namespace TccGabrielDuarte.CrossCutting
             return lstTurma;
         }
 
-        public static ICollection<IEntityBase> PopularListaModel(Type type, IDataReader dr)
+        public static List<Disciplina> PopularListaDisciplinasCompleta(IDataReader dr, List<Disciplina> lstDisciplina)
         {
-            if (type == typeof(Aluno))
+            var lstDisciplinaRetorno = PopularListaDisciplinas(dr);
+
+            for (int i = 0; i < lstDisciplinaRetorno.Count; i++)
             {
-                
+                lstDisciplinaRetorno[i].Turma = lstDisciplina[i].Turma;
+                lstDisciplinaRetorno[i].CursoDisciplinas = lstDisciplina[i].CursoDisciplinas;
+                lstDisciplinaRetorno[i].CursoDisciplinas.First().DisciplinaId = lstDisciplinaRetorno[i].Id;
             }
-            return null;
+
+            return lstDisciplinaRetorno;
         }
 
-        public static List<Disciplina> PopularListaDisciplinas(System.Data.IDataReader dr, List<Disciplina> lstDisciplina, List<Turma> lstTurma)
+        public static List<Disciplina> PopularListaDisciplinas(IDataReader dr)
         {
             var lstDisciplinaRetorno = new List<Disciplina>();
-            var i = 0;
+
             while (dr.Read())
             {
-                foreach (var cursoDisc in lstDisciplina[i].CursoDisciplinas)
-                {
-                    cursoDisc.DisciplinaId = int.Parse(dr[nameof(Disciplina.Id)].ToString());
-                }
-
                 var disciplina = new Disciplina
                 {
                     Id = int.Parse(dr[nameof(Disciplina.Id)].ToString()),
@@ -75,40 +86,29 @@ namespace TccGabrielDuarte.CrossCutting
                     Creditos = int.Parse(dr[nameof(Disciplina.Creditos)].ToString()),
                     Nome = (string)dr[nameof(Disciplina.Nome)],
                     TurmaId = int.Parse(dr[nameof(Disciplina.TurmaId)].ToString()),
-                    Turma = lstTurma.Find(x => x.Id == int.Parse(dr[nameof(Disciplina.TurmaId)].ToString())),
-                    CursoDisciplinas = lstDisciplina[i].CursoDisciplinas
+                    
                 };
 
                 lstDisciplinaRetorno.Add(disciplina);
-
-                i++;
             }
 
             return lstDisciplinaRetorno;
         }
 
-        public static List<Aluno> PopularListaAlunos(System.Data.IDataReader dr, List<Aluno> lstAlunos)
+        public static List<Aluno> PopularListaAlunos(IDataReader dr)
         {
             var lstAlunoRetorno = new List<Aluno>();
-            var i = 0;
+
             while (dr.Read())
             {
-                foreach (var alunoCurso in lstAlunos[i].AlunoCursos)
-                {
-                    alunoCurso.AlunoId = int.Parse(dr[nameof(Aluno.Id)].ToString());
-                }
-
                 var aluno = new Aluno
                 {
                     Id = int.Parse(dr[nameof(Aluno.Id)].ToString()),
                     Nome = (string)dr[nameof(Aluno.Nome)],
-                    Semestre = int.Parse(dr[nameof(Aluno.Semestre)].ToString()),
-                    AlunoCursos = lstAlunos[i].AlunoCursos
-                };
+                    Semestre = int.Parse(dr[nameof(Aluno.Semestre)].ToString())
+                };                
 
                 lstAlunoRetorno.Add(aluno);
-
-                i++;
             }
 
             return lstAlunoRetorno;
