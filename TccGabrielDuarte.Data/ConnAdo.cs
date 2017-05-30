@@ -1,7 +1,10 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using TccGabrielDuarte.CrossCutting;
 using TccGabrielDuarte.Data.Ado;
+using TccGabrielDuarte.Model;
 
 namespace TccGabrielDuarte.Data
 {
@@ -16,10 +19,17 @@ namespace TccGabrielDuarte.Data
             Banco = banco;
         }
 
-        public int GetListaAlunos()
+        public ICollection<Aluno> GetListaAlunos()
         {
             var repo = new AlunoRepository(Conn);
-            return repo.GetAll().Count;
+            return repo.GetAll();
+        }
+
+        public int GetAlunoById(int id)
+        {
+            var repo = new AlunoRepository(Conn);
+            var aluno = repo.GetById(id);
+            return 1;
         }
 
         public int GetListaCursos()

@@ -11,12 +11,13 @@ namespace TccGabrielDuarte.CrossCutting
 
         void LimparBase();
 
-        int GetListaAlunos();
+        ICollection<Aluno> GetListaAlunos();
 
         int GetListaCursos();
 
         int GetListaDisciplinas();
 
         int GetListaTurmas();
+        int GetAlunoById(int id);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text;
 using Microsoft.Data.Sqlite;
 using TccGabrielDuarte.CrossCutting;
@@ -63,6 +64,58 @@ namespace TccGabrielDuarte.Data.Ado
                 }
             }
 
+            return null;
+        }
+
+        public T GetById(int id)
+        {
+            using (var conn = _context.Conn)
+            {
+                IDbCommand cmd = null;
+                IDataParameter param = null;
+                switch (_context.Banco)
+                {
+                    case Enums.BANCOS.SQLite:
+                        cmd = new SqliteCommand();
+                        param = new SqliteParameter();
+                        break;
+                    case Enums.BANCOS.SQLServer:
+                        cmd = new SqlCommand();
+                        param = new SqlParameter();
+                        break;
+                    default:
+                        break;
+                }
+
+                using (cmd)
+                {
+                    cmd.CommandText = $"SELECT * FROM {typeof(T).Name} WHERE {nameof(Aluno.Id)} = @{nameof(Aluno.Id)}";
+                    cmd.Connection = conn;
+
+                    param.ParameterName = $"@{nameof(Aluno.Id)}";
+                    param.Value = id;
+
+                    cmd.Parameters.Add(param);
+
+                    conn.Open();
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        if (typeof(T) == typeof(Aluno))
+                        {
+                            return ModelHelper.PopularListaAlunos(dr).First() as T;
+                        }
+                        else if (typeof(T) == typeof(Curso))
+                        {
+                        }
+                        else if (typeof(T) == typeof(Disciplina))
+                        {
+                        }
+                        else if (typeof(T) == typeof(Turma))
+                        {
+                        }
+                    }
+                }
+            }
             return null;
         }
     }

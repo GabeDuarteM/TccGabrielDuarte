@@ -22,12 +22,14 @@ namespace TccGabrielDuarte.Data.EF
         {
             UseSqlServer = true;
             Database.EnsureCreated();
+            Database.SetCommandTimeout(int.MaxValue);
         }
 
         public TccContext(Enums.BANCOS banco)
         {
             UseSqlServer = banco == Enums.BANCOS.SQLServer ? true : false;
             Database.EnsureCreated();
+            Database.SetCommandTimeout(int.MaxValue);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -8,5 +8,6 @@ namespace TccGabrielDuarte.Data.Dapper
     public interface IEntityBaseRepository<T> where T : class, IEntityBase
     {
         ICollection<T> GetAll();
+        T GetById(int id);
     }
 }

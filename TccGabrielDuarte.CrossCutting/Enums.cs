@@ -11,10 +11,8 @@ namespace TccGabrielDuarte.CrossCutting
         public enum OPCOES
         {
             PopularTabelas,
-            Alunos,
-            Cursos,
-            Disciplinas,
-            Turmas
+            GetAll,
+            GetById
         }
 
         public enum PROVIDERS

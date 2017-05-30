@@ -61,6 +61,8 @@ namespace TccGabrielDuarte
         private static void IniciarOperacao(Enums.OPCOES opcao)
         {
             int? qtAlunos = null;
+            var conn = new Conexao(DB, PROVIDER);
+            var id = int.MinValue;
 
             if (opcao == Enums.OPCOES.PopularTabelas)
             {
@@ -79,8 +81,13 @@ namespace TccGabrielDuarte
                     return;
                 }
             }
+            else if (opcao == Enums.OPCOES.GetById)
+            {
+                Console.WriteLine("Pesquisando último ID...");
+                id = conn.GetLastId();
+                Console.WriteLine($"ID encontrado: {id + Environment.NewLine}");
+            }
 
-            var conn = new Conexao(DB, PROVIDER);
 
             if (opcao == Enums.OPCOES.PopularTabelas)
             {
@@ -94,7 +101,7 @@ namespace TccGabrielDuarte
 
             var timer = Stopwatch.StartNew();
 
-            var qtRegistros = conn.RealizarOperacao(opcao, qtAlunos);
+            var qtRegistros = conn.RealizarOperacao(opcao, qtAlunos, id);
 
             timer.Stop();
 

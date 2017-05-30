@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TccGabrielDuarte.CrossCutting;
 using TccGabrielDuarte.Data.EF;
@@ -32,24 +33,25 @@ namespace TccGabrielDuarte.Data
             Conn.LimparBase();
         }
 
-        public int RealizarOperacao(Enums.OPCOES opcao, int? qtAlunos)
+        public int RealizarOperacao(Enums.OPCOES opcao, int? qtAlunos, int id)
         {
             switch (opcao)
             {
-                case Enums.OPCOES.Alunos:
-                    return Conn.GetListaAlunos();
-                case Enums.OPCOES.Cursos:
-                    return Conn.GetListaCursos();
-                case Enums.OPCOES.Disciplinas:
-                    return Conn.GetListaDisciplinas();
-                case Enums.OPCOES.Turmas:
-                    return Conn.GetListaTurmas();
+                case Enums.OPCOES.GetAll:
+                    return Conn.GetListaAlunos().Count;
+                case Enums.OPCOES.GetById:
+                    return Conn.GetAlunoById(id);
                 case Enums.OPCOES.PopularTabelas:
                     Conn.Seed((int)qtAlunos);
                     return (int)qtAlunos;
                 default:
                     return -1;
             }
+        }
+
+        public int GetLastId()
+        {
+            return Conn.GetListaAlunos().Last().Id;
         }
     }
 }

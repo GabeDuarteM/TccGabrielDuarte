@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using TccGabrielDuarte.CrossCutting;
 using TccGabrielDuarte.Data.EF;
+using TccGabrielDuarte.Model;
 
 namespace TccGabrielDuarte.Data
 {
@@ -15,14 +17,21 @@ namespace TccGabrielDuarte.Data
             Banco = banco;
         }
 
-        public int GetListaAlunos()
+        public ICollection<Aluno> GetListaAlunos()
         {
             using (var context = Conn)
             {
                 AlunoRepository alunoRepo = new AlunoRepository(context);
 
-                return alunoRepo.GetAll().Count;
+                return alunoRepo.GetAll();
             }
+        }
+
+        public int GetAlunoById(int id)
+        {
+            var repo = new AlunoRepository(Conn);
+            var aluno = repo.Get(id);
+            return 1;
         }
 
         public void Seed(int qtAlunos)
